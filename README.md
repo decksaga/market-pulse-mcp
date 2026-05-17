@@ -92,7 +92,7 @@ git clone https://github.com/decksaga/market-pulse-mcp.git
 
 **3.** Restart Claude. Done.
 
-> Want to modify the source? Run `npm install` then `npm run build` after making changes.
+> Want to modify the source? Run `pnpm install` then `pnpm build` after making changes.
 
 <br />
 
