@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "market-pulse": {
+      "command": "node",
+      "args": ["C:\\Users\\santi\\Desktop\\market-pulse-mcp\\dist\\server.js"]
+    }
+  }
+}

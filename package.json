@@ -1,0 +1,28 @@
+{
+  "name": "market-pulse-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for real-time market data, crypto prices, forex rates, and economic indicators",
+  "type": "module",
+  "main": "dist/server.js",
+  "bin": {
+    "market-pulse-mcp": "./dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx --watch src/server.ts",
+    "start": "node dist/server.js"
+  },
+  "keywords": ["mcp", "market-data", "crypto", "forex", "economics", "claude", "ai"],
+  "author": "Santiago Gutierrez",
+  "license": "MIT",
+  "packageManager": "pnpm@10.33.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.8.0",
+    "tsx": "^4.22.0",
+    "typescript": "^6.0.3"
+  }
+}
