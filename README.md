@@ -1,13 +1,11 @@
 <div align="center">
 
-<!-- Header Banner -->
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,50:1a3a2a,100:6ee7b7&height=220&section=header&text=Market%20Pulse%20MCP&fontSize=50&fontColor=ffffff&fontAlignY=35&desc=Real-time%20market%20data%20for%20Claude&descSize=18&descColor=6ee7b7&descAlignY=55&animation=fadeIn" width="100%" />
 
 <br />
 
-<p>
-  <strong>Give Claude real-time access to crypto prices, forex rates & market sentiment.</strong>
-</p>
+Give Claude real-time access to crypto prices, forex rates & market sentiment.  
+No API keys. No costs. Just plug it in.
 
 <p>
   <a href="https://github.com/decksaga/market-pulse-mcp/stargazers"><img src="https://img.shields.io/github/stars/decksaga/market-pulse-mcp?style=for-the-badge&color=6ee7b7&labelColor=0d1117" /></a>
@@ -18,7 +16,7 @@
 
 <p>
   <a href="#quick-start">Quick Start</a> •
-  <a href="#what-it-does">What it does</a> •
+  <a href="#tools">Tools</a> •
   <a href="#data-sources">Data Sources</a>
 </p>
 
@@ -28,11 +26,11 @@
 
 ## ⚡ Demo
 
+Ask Claude anything about the market. It calls the right tool automatically.
+
 ```
 You: "How's the crypto market doing today?"
 ```
-
-> Claude automatically calls `get_market_summary` and responds with:
 
 ```
 📊 MARKET SUMMARY
@@ -53,30 +51,27 @@ You: "How's the crypto market doing today?"
 😰 Fear & Greed: 38/100 (Fear)
 ```
 
+No web searches. No hallucinations. Just live data.
+
 <br />
 
-## 🛠️ What it does
+## 🛠️ Tools
 
-Market Pulse gives Claude access to live financial data through **5 tools**:
+Market Pulse ships with **5 tools** that Claude can call on its own:
 
-| Tool | Description |
+| Tool | What it does |
 |:-----|:------------|
-| `get_price` | Current price of any cryptocurrency (BTC, ETH, SOL, and 10+ more) |
-| `get_top_cryptos` | Top N cryptos ranked by market cap (1–25) |
-| `get_forex_rate` | Exchange rate between any two fiat currencies |
-| `get_fear_greed_index` | Crypto Fear & Greed Index with 7-day history |
-| `get_market_summary` | Full market briefing: top 5 crypto + forex + sentiment |
+| `get_price` | Price of any crypto — BTC, ETH, SOL, and 10+ more |
+| `get_top_cryptos` | Top N by market cap (1–25) |
+| `get_forex_rate` | Exchange rate between any two currencies |
+| `get_fear_greed_index` | Fear & Greed Index + 7-day history |
+| `get_market_summary` | Full briefing: top 5 crypto + forex + sentiment |
 
 <br />
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org) v18+
-- [Claude Desktop](https://claude.ai/download) or [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
-
-### Install
+**1.** Clone and build:
 
 ```bash
 git clone https://github.com/decksaga/market-pulse-mcp.git
@@ -85,9 +80,7 @@ npm install
 npm run build
 ```
 
-### Configure
-
-Add to your Claude config (`~/.claude/settings.json` for Claude Code, or `claude_desktop_config.json` for Claude Desktop):
+**2.** Add this to your Claude config (`~/.claude/settings.json` or `claude_desktop_config.json`):
 
 ```json
 {
@@ -100,50 +93,48 @@ Add to your Claude config (`~/.claude/settings.json` for Claude Code, or `claude
 }
 ```
 
-Restart Claude. That's it. ✅
+**3.** Restart Claude. Done.
 
 <br />
 
 ## 📡 Data Sources
 
-All APIs are **free and require no API keys**:
+Everything runs on free, public APIs. No keys needed.
 
-| Source | Data | Link |
-|:-------|:-----|:-----|
-| CoinGecko | Crypto prices & market data | [coingecko.com](https://www.coingecko.com/en/api) |
-| ExchangeRate API | Forex rates (150+ currencies) | [open.er-api.com](https://open.er-api.com) |
-| Alternative.me | Fear & Greed Index | [alternative.me](https://alternative.me/crypto/fear-and-greed-index/) |
+| Source | Data |
+|:-------|:-----|
+| [CoinGecko](https://www.coingecko.com/en/api) | Crypto prices, market caps, 24h volume |
+| [ExchangeRate API](https://open.er-api.com) | 150+ fiat currency pairs |
+| [Alternative.me](https://alternative.me/crypto/fear-and-greed-index/) | Crypto Fear & Greed Index |
 
 <br />
 
-## 🪙 Supported Cryptocurrencies
+## 🪙 Supported Cryptos
 
 <p>
-  <code>Bitcoin</code> · <code>Ethereum</code> · <code>Solana</code> · <code>Cardano</code> · <code>Ripple (XRP)</code> · <code>Dogecoin</code> · <code>Polkadot</code> · <code>Avalanche</code> · <code>Chainlink</code> · <code>Litecoin</code> · <code>BNB</code> · <code>Polygon</code> + any coin on CoinGecko
+  <code>Bitcoin</code> · <code>Ethereum</code> · <code>Solana</code> · <code>Cardano</code> · <code>XRP</code> · <code>Dogecoin</code> · <code>Polkadot</code> · <code>Avalanche</code> · <code>Chainlink</code> · <code>Litecoin</code> · <code>BNB</code> · <code>Polygon</code> + anything listed on CoinGecko
 </p>
 
 <br />
 
-## 🏗️ Tech Stack
+## 🏗️ Stack
 
 <p>
   <img src="https://skillicons.dev/icons?i=ts,nodejs&theme=dark" height="40" />
 </p>
 
-- **TypeScript** + **Node.js**
-- [`@modelcontextprotocol/sdk`](https://github.com/modelcontextprotocol/typescript-sdk) — official MCP SDK
-- [Zod v4](https://zod.dev) — schema validation
+TypeScript, Node.js, [`@modelcontextprotocol/sdk`](https://github.com/modelcontextprotocol/typescript-sdk), and [Zod v4](https://zod.dev) for validation.
 
 <br />
 
-## 📁 Project Structure
+## 📁 Structure
 
 ```
 market-pulse-mcp/
 ├── src/
-│   ├── server.ts    # MCP tool definitions & formatting
-│   └── apis.ts      # API clients (CoinGecko, ExchangeRate, Alternative.me)
-├── dist/            # Compiled output
+│   ├── server.ts    # Tool definitions & formatting
+│   └── apis.ts      # CoinGecko, ExchangeRate, Alternative.me clients
+├── dist/            # Compiled JS
 ├── package.json
 └── tsconfig.json
 ```
@@ -152,13 +143,13 @@ market-pulse-mcp/
 
 ## 📄 License
 
-MIT — use it, fork it, build on it.
+MIT — do whatever you want with it.
 
 <br />
 
 <div align="center">
 
-**Built by [@decksaga](https://github.com/decksaga)**
+Made by [@decksaga](https://github.com/decksaga)
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,50:1a3a2a,100:6ee7b7&height=100&section=footer" width="100%" />
 
