@@ -71,10 +71,12 @@ Market Pulse ships with **5 tools** that Claude can call on its own:
 
 ## 🚀 Quick Start
 
-**1.** Clone it:
+**1.** Clone and install dependencies:
 
 ```bash
 git clone https://github.com/decksaga/market-pulse-mcp.git
+cd market-pulse-mcp
+npm install
 ```
 
 **2.** Add this to your Claude config (`~/.claude/settings.json` or `claude_desktop_config.json`):
@@ -92,7 +94,7 @@ git clone https://github.com/decksaga/market-pulse-mcp.git
 
 **3.** Restart Claude. Done.
 
-> Want to modify the source? Run `pnpm install` then `pnpm build` after making changes.
+Already compiled — no build step needed. Just clone, install, and go.
 
 <br />
 
