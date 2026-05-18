@@ -12,6 +12,7 @@
   <img src="https://img.shields.io/badge/MCP-Compatible-6ee7b7?style=for-the-badge&labelColor=0d1117" />
   <img src="https://img.shields.io/badge/API_Keys-None-ff6b6b?style=for-the-badge&labelColor=0d1117" />
   <img src="https://img.shields.io/badge/Cost-$0-6ee7b7?style=for-the-badge&labelColor=0d1117" />
+  <img src="https://img.shields.io/badge/v2.0-New-blueviolet?style=for-the-badge&labelColor=0d1117" />
 </p>
 
 </div>
@@ -20,7 +21,7 @@
 
 ## What is this?
 
-An MCP server that gives Claude **live market data** instead of guessing or searching the web. You ask about crypto, forex, or market sentiment — Claude pulls real numbers from real APIs.
+An MCP server that gives Claude **live market data** instead of guessing or searching the web. Crypto, stocks, forex, indices, sentiment — real numbers from real APIs.
 
 ```
 You: "how's the market doing?"
@@ -28,7 +29,7 @@ You: "how's the market doing?"
 
 ```
 📊 MARKET SUMMARY
-═══════════════════════════════════════════
+═══════════════════
 
 🪙 Top Cryptos:
   Bitcoin (BTC):    $78,004.00   🔴 -0.24%
@@ -36,6 +37,11 @@ You: "how's the market doing?"
   BNB (BNB):           $598.00   🟢 +0.87%
   Solana (SOL):        $148.30   🔴 -2.31%
   XRP (XRP):             $0.52   🟢 +0.45%
+
+📈 Indices:
+  S&P 500:   5,842.01   🟢 +0.62%
+  NASDAQ:   18,847.28   🟢 +0.89%
+  Dow Jones: 42,654.74   🔴 -0.12%
 
 💱 Forex (USD base):
   USD/EUR: 0.9234
@@ -49,12 +55,15 @@ No web searches. No hallucinated data. Just live numbers.
 
 <br />
 
-## 🛠️ 5 Tools
+## 🛠️ 8 Tools
 
 | | Tool | Does what |
 |:--|:-----|:----------|
 | 🪙 | `get_price` | Price of any crypto — BTC, ETH, SOL, DOGE, and 10+ more |
 | 📊 | `get_top_cryptos` | Top N ranked by market cap |
+| 📈 | `get_stock_price` | **NEW** — Any stock or ETF: AAPL, NVDA, TSLA, MSFT, SPY, QQQ... |
+| 🏛️ | `get_market_indices` | **NEW** — S&P 500, NASDAQ, Dow Jones, Russell 2000, VIX |
+| 🔥 | `get_trending_cryptos` | **NEW** — Top 7 trending coins on CoinGecko right now |
 | 💱 | `get_forex_rate` | Exchange rate between any two currencies |
 | 😱 | `get_fear_greed_index` | Fear & Greed Index + 7-day trend |
 | 📋 | `get_market_summary` | Everything above in one call |
@@ -94,15 +103,10 @@ Already compiled. No build step.
 
 | Source | What it provides |
 |:-------|:-----------------|
-| [CoinGecko](https://www.coingecko.com/en/api) | Crypto prices, market caps, 24h volume |
+| [CoinGecko](https://www.coingecko.com/en/api) | Crypto prices, market caps, trending, 24h volume |
+| [Yahoo Finance](https://finance.yahoo.com) | Stocks, ETFs, market indices |
 | [ExchangeRate API](https://open.er-api.com) | 150+ fiat currency pairs |
 | [Alternative.me](https://alternative.me/crypto/fear-and-greed-index/) | Crypto Fear & Greed Index |
-
-<br />
-
-## 🪙 Supported
-
-`Bitcoin` · `Ethereum` · `Solana` · `Cardano` · `XRP` · `Dogecoin` · `Polkadot` · `Avalanche` · `Chainlink` · `Litecoin` · `BNB` · `Polygon` + anything on CoinGecko
 
 <br />
 
@@ -111,8 +115,8 @@ Already compiled. No build step.
 ```
 market-pulse-mcp/
 ├── src/
-│   ├── server.ts    # Tool definitions
-│   └── apis.ts      # CoinGecko, ExchangeRate, Alternative.me
+│   ├── server.ts    # Tool definitions (8 tools)
+│   └── apis.ts      # CoinGecko, Yahoo Finance, ExchangeRate, Alternative.me
 ├── dist/            # Ready to run
 ├── package.json
 └── tsconfig.json

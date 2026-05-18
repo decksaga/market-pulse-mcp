@@ -1,7 +1,10 @@
 const COINGECKO_BASE = "https://api.coingecko.com/api/v3";
 const EXCHANGERATE_BASE = "https://open.er-api.com/v6/latest";
-async function fetchJSON(url) {
-    const res = await fetch(url);
+const YAHOO_BASE = "https://query1.finance.yahoo.com/v8/finance/chart";
+async function fetchJSON(url, headers) {
+    const res = await fetch(url, {
+        headers: { "User-Agent": "MarketPulse/2.0", ...headers },
+    });
     if (!res.ok)
         throw new Error(`API error: ${res.status} ${res.statusText}`);
     return res.json();
@@ -93,13 +96,64 @@ export async function getFearGreedIndex() {
         })),
     };
 }
+export async function getStockPrice(symbol) {
+    const ticker = symbol.toUpperCase().trim();
+    const data = await fetchJSON(`${YAHOO_BASE}/${encodeURIComponent(ticker)}?range=1d&interval=1d`);
+    if (data.chart.error)
+        throw new Error(`Stock "${ticker}" not found: ${data.chart.error.description}`);
+    if (!data.chart.result?.length)
+        throw new Error(`Stock "${ticker}" not found.`);
+    const meta = data.chart.result[0].meta;
+    const price = meta.regularMarketPrice;
+    const prevClose = meta.previousClose;
+    const change = prevClose ? ((price - prevClose) / prevClose) * 100 : null;
+    return {
+        symbol: meta.symbol,
+        price,
+        currency: meta.currency,
+        exchange: meta.exchangeName,
+        change_pct: change !== null ? Math.round(change * 100) / 100 : null,
+        previous_close: prevClose ?? null,
+    };
+}
+const INDICES = {
+    "S&P 500": "^GSPC",
+    "NASDAQ": "^IXIC",
+    "Dow Jones": "^DJI",
+    "Russell 2000": "^RUT",
+    "VIX": "^VIX",
+};
+export async function getMarketIndices() {
+    const entries = Object.entries(INDICES);
+    const results = await Promise.allSettled(entries.map(([, ticker]) => getStockPrice(ticker)));
+    return entries.map(([name], i) => {
+        const result = results[i];
+        if (result.status === "fulfilled") {
+            return { name, symbol: result.value.symbol, price: result.value.price, change_pct: result.value.change_pct };
+        }
+        return { name, symbol: INDICES[name], price: null, change_pct: null, error: true };
+    });
+}
+export async function getTrendingCryptos() {
+    const data = await fetchJSON(`${COINGECKO_BASE}/search/trending`);
+    return data.coins.slice(0, 7).map(c => ({
+        name: c.item.name,
+        symbol: c.item.symbol.toUpperCase(),
+        rank: c.item.market_cap_rank,
+        price_usd: c.item.data?.price ?? null,
+        change_24h: c.item.data?.price_change_percentage_24h?.usd
+            ? Math.round(c.item.data.price_change_percentage_24h.usd * 100) / 100
+            : null,
+    }));
+}
 // ─── MARKET SUMMARY ───
 export async function getMarketSummary() {
-    const [cryptos, forex, fearGreed] = await Promise.all([
+    const [cryptos, forex, fearGreed, indices] = await Promise.all([
         getTopCryptos(5),
         getMultipleForexRates("USD", ["EUR", "GBP", "JPY", "CHF", "CAD"]),
         getFearGreedIndex(),
+        getMarketIndices().catch(() => null),
     ]);
-    return { cryptos, forex, fear_greed: fearGreed.current };
+    return { cryptos, forex, fear_greed: fearGreed.current, indices };
 }
 //# sourceMappingURL=apis.js.map

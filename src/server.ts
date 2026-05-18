@@ -10,11 +10,14 @@ import {
   getMultipleForexRates,
   getFearGreedIndex,
   getMarketSummary,
+  getStockPrice,
+  getMarketIndices,
+  getTrendingCryptos,
 } from "./apis.js"
 
 const server = new McpServer({
   name: "market-pulse",
-  version: "1.0.0",
+  version: "2.0.0",
 })
 
 // ─── TOOL: get_price ───
@@ -120,6 +123,79 @@ server.tool(
   }
 )
 
+// ─── TOOL: get_stock_price ───
+
+server.tool(
+  "get_stock_price",
+  "Get the current price of any stock or ETF. Works with any ticker: AAPL, NVDA, TSLA, MSFT, AMZN, SPY, QQQ, etc.",
+  { symbol: z.string().describe("Stock ticker symbol (e.g. 'AAPL', 'NVDA', 'TSLA', 'MSFT')") },
+  async ({ symbol }) => {
+    try {
+      const data = await getStockPrice(symbol)
+      const changeEmoji = data.change_pct !== null ? (data.change_pct >= 0 ? "🟢" : "🔴") : ""
+      const text = [
+        `${data.symbol} — $${data.price.toLocaleString("en-US", { maximumFractionDigits: 2 })} ${data.currency}`,
+        data.change_pct !== null ? `${changeEmoji} Today: ${data.change_pct >= 0 ? "+" : ""}${data.change_pct}%` : null,
+        data.previous_close ? `Previous Close: $${data.previous_close.toLocaleString("en-US", { maximumFractionDigits: 2 })}` : null,
+        `Exchange: ${data.exchange}`,
+      ].filter(Boolean).join("\n")
+
+      return { content: [{ type: "text", text }] }
+    } catch (error) {
+      return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : "Unknown error"}` }], isError: true }
+    }
+  }
+)
+
+// ─── TOOL: get_market_indices ───
+
+server.tool(
+  "get_market_indices",
+  "Get major US market indices: S&P 500, NASDAQ, Dow Jones, Russell 2000, and VIX.",
+  {},
+  async () => {
+    try {
+      const data = await getMarketIndices()
+      const lines = data.map(idx => {
+        if (idx.price === null) return `  ${idx.name}: unavailable`
+        const emoji = (idx.change_pct ?? 0) >= 0 ? "🟢" : "🔴"
+        const change = idx.change_pct !== null ? ` ${emoji} ${idx.change_pct >= 0 ? "+" : ""}${idx.change_pct}%` : ""
+        return `  ${idx.name}: ${idx.price.toLocaleString("en-US", { maximumFractionDigits: 2 })}${change}`
+      })
+
+      return { content: [{ type: "text", text: `📈 Market Indices:\n\n${lines.join("\n")}` }] }
+    } catch (error) {
+      return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : "Unknown error"}` }], isError: true }
+    }
+  }
+)
+
+// ─── TOOL: get_trending_cryptos ───
+
+server.tool(
+  "get_trending_cryptos",
+  "Get the top 7 trending cryptocurrencies right now on CoinGecko — what people are searching for.",
+  {},
+  async () => {
+    try {
+      const data = await getTrendingCryptos()
+      const lines = data.map((c, i) => {
+        const price = c.price_usd !== null
+          ? `$${c.price_usd >= 1 ? c.price_usd.toLocaleString("en-US", { maximumFractionDigits: 2 }) : c.price_usd.toFixed(6)}`
+          : "N/A"
+        const change = c.change_24h !== null
+          ? ` ${c.change_24h >= 0 ? "🟢" : "🔴"} ${c.change_24h >= 0 ? "+" : ""}${c.change_24h}%`
+          : ""
+        return `${i + 1}. ${c.name} (${c.symbol}) — ${price}${change}`
+      })
+
+      return { content: [{ type: "text", text: `🔥 Trending Cryptos:\n\n${lines.join("\n")}` }] }
+    } catch (error) {
+      return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : "Unknown error"}` }], isError: true }
+    }
+  }
+)
+
 // ─── TOOL: get_market_summary ───
 
 server.tool(
@@ -144,6 +220,13 @@ server.tool(
         data.fear_greed.value <= 50 ? "😰" :
         data.fear_greed.value <= 75 ? "😀" : "🤑"
 
+      const indexLines = data.indices ? data.indices.map(idx => {
+        if (idx.price === null) return `  ${idx.name}: unavailable`
+        const emoji = (idx.change_pct ?? 0) >= 0 ? "🟢" : "🔴"
+        const change = idx.change_pct !== null ? ` ${emoji} ${idx.change_pct >= 0 ? "+" : ""}${idx.change_pct}%` : ""
+        return `  ${idx.name}: ${idx.price.toLocaleString("en-US", { maximumFractionDigits: 2 })}${change}`
+      }) : []
+
       const text = [
         "📊 MARKET SUMMARY",
         "═══════════════════",
@@ -151,6 +234,7 @@ server.tool(
         "🪙 Top Cryptos:",
         ...cryptoLines,
         "",
+        ...(indexLines.length ? ["📈 Indices:", ...indexLines, ""] : []),
         "💱 Forex (USD base):",
         ...forexLines,
         "",
